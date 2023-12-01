@@ -10,33 +10,45 @@ source:
   sha256: d365941d41f4dca1a83d021b0444df2db2230d843f943f0959aa21082d353e26
 
 build:
-  noarch: python
   number: 0
-  script: {{ PYTHON }} -m pip install . -vv
+  skip: true  # [py<38]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -v
 
 requirements:
   host:
-    - python >=3.6
+    - python
     - pip
+    - setuptools
+    - wheel
   run:
-    - python >=3.6
+    - python
     - numpy >=1.18.2
     - pandas >=1.0.3
-    - scikit-learn >=0.22.2
+    - scikit-learn >=1.0.0
     - scipy >=1.4.1
     - statsmodels >=0.11.1
 
 test:
   imports:
     - feature_engine
+  requires:
+    - pip
+  commands:
+    - pip check
+    # Note that we can't run the tests because:
+    # * The sdist is missing some test files (conftest.py in particular)
+    # * The repo doesn't have any tag or release. Which means we can't download the archive
+    #   from GH.
 
 about:
   home: https://github.com/feature-engine/feature_engine
+  summary: Feature engineering and selection package with Scikit-learn's fit and transform functionality
+  description: Feature-engine is a Python library with multiple transformers to engineer and select features to use in machine learning models. Feature-engine preserves Scikit-learn functionality with methods fit() and transform() to learn parameters from and then transform the data.
   license: BSD-3-Clause
   license_family: BSD
   license_file: LICENSE.md
-  summary: Feature engineering and selection package with Scikit-learn's fit and transform functionality
   doc_url: https://feature-engine.trainindata.com
+  dev_url: https://github.com/feature-engine/feature_engine
 
 extra:
   recipe-maintainers:
